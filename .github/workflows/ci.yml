@@ -6,6 +6,10 @@ on:
       - develop
       - 'hotfix/**'
       - 'release/**'
+  create:
+    branches:
+      - 'hotfix/**'
+      - 'release/**'
   pull_request:
   workflow_dispatch:
 jobs:
