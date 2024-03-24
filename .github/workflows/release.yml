@@ -16,16 +16,22 @@ jobs:
     # only run on main and develop branch for workflow_dispatch event
     if: ${{ github.event_name != 'workflow_dispatch' || ( github.ref_name == 'main' || github.ref_name == 'develop')}}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      deployments: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: gitflow-workflow-action release workflows
-        uses: hoangvvo/gitflow-workflow-action@0.3.7
+        uses: kzhou57/gitflow-workflow-action@develop
         with:
           develop_branch: "develop"
           main_branch: "main"
           merge_back_from_main: false
           version: ${{ inputs.version }}
           release_summary: "Production release, please close the PR after deployed to production."
-          dry_run: true
+          dry_run: false
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
