@@ -4,7 +4,9 @@ on:
     inputs:
       version:
         type: string
-        description: 'Version to release, e.g. 415.1.0'
+        description: |
+          Version to release, e.g. 1.1.0
+          Note : Only main and develop branch are allowed to release, release from main branch will create hotfix
         required: true
   pull_request:
     types:
@@ -30,7 +32,10 @@ jobs:
           main_branch: "main"
           merge_back_from_main: false
           version: ${{ inputs.version }}
-          release_summary: "Production release, please close the PR after deployed to production."
+          release_summary: |
+            Production release: 
+              - This PR should trigger a production release automatically
+              - Once the release is done, please close this PR, a release tag will be created and the code will be merged back to develop branch automatically
           dry_run: false
 
         env:
