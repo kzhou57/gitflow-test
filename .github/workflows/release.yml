@@ -25,7 +25,7 @@ jobs:
           merge_back_from_main: false
           version: ${{ inputs.version }}
           release_summary: "Production release, please close the PR after deployed to production."
-          dryrun: true
+          dry_run: true
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
