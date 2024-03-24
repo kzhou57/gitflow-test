@@ -17,7 +17,7 @@ jobs:
     if: ${{ github.event_name != 'workflow_dispatch' || ( github.ref_name == 'main' || github.ref_name == 'develop')}}
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       pull-requests: write
       deployments: write
     steps:
