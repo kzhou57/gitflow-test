@@ -5,8 +5,8 @@ on:
       version:
         type: string
         description: |
-          Version to release, e.g. 1.1.0
-          Note : Only main and develop branch are allowed to release, release from main branch will create hotfix
+          Version to release, e.g. 1.1.0; 
+          Only main and develop branch are allowed to release, release from main branch will create hotfix. 
         required: true
   pull_request:
     types:
