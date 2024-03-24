@@ -12,7 +12,7 @@ on:
     types:
       - closed
     branches:
-      - 'release/**'
+      - main
 jobs:
   release_workflow:
     # only run on main and develop branch for workflow_dispatch event
