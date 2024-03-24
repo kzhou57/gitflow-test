@@ -16,6 +16,9 @@ jobs:
     # only run on main and develop branch for workflow_dispatch event
     if: ${{ github.event_name != 'workflow_dispatch' || ( github.ref_name == 'main' || github.ref_name == 'develop')}}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
