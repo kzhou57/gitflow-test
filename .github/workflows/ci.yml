@@ -1,0 +1,56 @@
+name: Mock CI - Test/Build/Deploy
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'hotfix/**'
+      - 'release/**'
+  pull_request:
+  workflow_dispatch:
+jobs:
+  Test:
+    # test on all branches
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Running tests"
+
+  Build:
+    needs: Test
+    # only do build on develop, release, hotfix branches
+    if: ${{ startsWith(github.ref_name, 'release') || startsWith(github.ref_name, 'hotfix') || github.ref_name == 'develop' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building"
+
+  Deploy-Dev:
+    needs: Build
+    # only do deploy to dev from develop branch
+    if: ${{ github.ref_name == 'develop' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to dev"
+
+  Deploy-Staging:
+    needs: Build
+    # only do deploy to staging from release/* branches
+    if: ${{ startsWith(github.ref_name, 'release') }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to staging"
+  
+  Deploy-Production:
+    needs: Build
+    # only do deploy to production from both release/* and hotfix/* branches
+    if: ${{ startsWith(github.ref_name, 'release') || startsWith(github.ref_name, 'hotfix')}}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to production"
+
+  Deploy-Hotfix:
+    needs: Build
+    # only do deploy to hotfix from hotfix/* branches
+    if: ${{ startsWith(github.ref_name, 'hotfix')}}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying to hotfix"

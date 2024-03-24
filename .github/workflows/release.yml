@@ -1,0 +1,30 @@
+name: Release Workflow
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: 'Version to release, e.g. 415.1.0'
+        required: true
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'release/**'
+jobs:
+  release_workflow:
+    # only run on main and develop branch for workflow_dispatch event
+    if: ${{ github.event_name != 'workflow_dispatch' || ( github.ref_name == 'main' || github.ref_name == 'develop')}}
+    runs-on: ubuntu-latest
+    steps:
+      - name: gitflow-workflow-action release workflows
+        uses: hoangvvo/gitflow-workflow-action@0.3.7
+        with:
+          develop_branch: "develop"
+          main_branch: "main"
+          merge_back_from_main: false
+          version: ${{ inputs.version }}
+          release_summary: "Production release, please close the PR after deployed to production."
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
