@@ -5,6 +5,10 @@ on:
       - main
       - develop
   pull_request:
+    types: 
+      - opened
+      - synchronize
+      - reopened
   workflow_dispatch:
 jobs:
   Test:
@@ -15,8 +19,8 @@ jobs:
 
   Build:
     needs: Test
-    # only do build on develop, or on PR from release, hotfix branches to main
-    if: ${{ (startsWith(github.ref_name, 'main') && ( startsWith(github.ref_head_name, 'release') || startsWith(github.ref_head_name, 'hotfix'))) || github.ref_name == 'develop' }}
+    # only do build on develop, or on PR from release, hotfix branches
+    if: ${{ ( startsWith(github.ref_head_name, 'release') || startsWith(github.ref_head_name, 'hotfix')) || github.ref_name == 'develop' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "Building"
@@ -24,31 +28,31 @@ jobs:
   Deploy-Dev:
     needs: Build
     # only do deploy to dev when push to develop branch
-    if: ${{ github.event_name == 'push' && github.ref_name == 'develop' }}
+    if: ${{ github.ref_name == 'develop' }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "Deploying to dev"
 
   Deploy-Staging:
     needs: Build
-    # only do deploy to staging when on PR from release/* branches to main
-    if: ${{ startsWith(github.ref_name, 'main') && startsWith(github.ref_head_name, 'release') }}
+    # only do deploy to staging when on PR from release/* branches
+    if: ${{ startsWith(github.ref_head_name, 'release') }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "Deploying to staging"
   
   Deploy-Production:
     needs: Build
-    # only do deploy to production when on PR from both release/* and hotfix/* branches to main
-    if: ${{ startsWith(github.ref_name, 'main') && ( startsWith(github.ref_head_name, 'release') || startsWith(github.ref_head_name, 'hotfix')) }}
+    # only do deploy to production when on PR from both release/* and hotfix/* branches
+    if: ${{ startsWith(github.ref_head_name, 'release') || startsWith(github.ref_head_name, 'hotfix') }}
     runs-on: ubuntu-latest
     steps:
       - run: echo "Deploying to production"
 
   Deploy-Hotfix:
     needs: Build
-    # only do deploy to hotfix when on PR from release/* branches to main
-    if: ${{ startsWith(github.ref_name, 'main') && startsWith(github.ref_head_name, 'hotfix')}}
+    # only do deploy to hotfix when on PR from release/* branches
+    if: ${{ startsWith(github.ref_head_name, 'hotfix')}}
     runs-on: ubuntu-latest
     steps:
       - run: echo "Deploying to hotfix"
