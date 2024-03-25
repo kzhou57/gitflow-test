@@ -43,6 +43,8 @@ jobs:
       # WORKAROUND: to trigger the CI workflow on the release branch (the PR and branch created by default GITHUB_TOKEN does not trigger the CI workflow)
       #   See the discussion here: https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
       - name: Close & Reopen release PR
+        # only run when the release PR is created
+        if: ${{ steps.gitflow-release.outputs.type == 'release' || steps.gitflow-release.outputs.type == 'hotfix'}}
         shell: bash
         run: |
           # Close the PR
