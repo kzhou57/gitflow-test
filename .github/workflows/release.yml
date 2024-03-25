@@ -1,4 +1,4 @@
-name: Release Workflow
+name: Initiate Release
 on:
   workflow_dispatch:
     inputs:
@@ -26,9 +26,8 @@ jobs:
       pull-requests: write
       deployments: write
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: gitflow-workflow-action release workflows
+      - name: Gitflow release workflow
+        id: gitflow-release
         uses: kzhou57/gitflow-workflow-action@develop
         with:
           develop_branch: "develop"
@@ -37,6 +36,22 @@ jobs:
           version: ${{ inputs.version }}
           release_summary: ${{ inputs.release_summary }}
           dry_run: false
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # WORKAROUND: to trigger the CI workflow on the release branch (the PR and branch created by default GITHUB_TOKEN does not trigger the CI workflow)
+      #   See the discussion here: https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
+      - name: Close & Reopen release PR
+        # only run when the release PR is created
+        if: ${{ steps.gitflow-release.outputs.type == 'release' || steps.gitflow-release.outputs.type == 'hotfix'}}
+        shell: bash
+        run: |
+          # Close the PR
+          gh pr close -R "${{ github.repository }}" \
+            --comment "Temporarily close release PR" \
+            ${{ steps.gitflow-release.outputs.pull_number }}
+          # Reopen the PR
+          gh pr reopen -R "${{ github.repository }}" \
+            --comment "Reopen release PR to trigger the workflows" \
+            ${{ steps.gitflow-release.outputs.pull_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
