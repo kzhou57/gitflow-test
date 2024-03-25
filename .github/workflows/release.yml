@@ -11,7 +11,7 @@ on:
       release_summary:
         type: string
         description: Release summary will be put into the PR description and release notes
-    pull_request:
+  pull_request:
     types:
       - closed
     branches:
