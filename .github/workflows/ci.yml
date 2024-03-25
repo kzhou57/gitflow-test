@@ -1,21 +1,34 @@
 name: Mock CI - Test/Build/Deploy
 on:
   push:
-    branches:
-      - main
-      - develop
+    # branches:
+    #   - main
+    #   - develop
+  create:
+    # branches:
+    #   - release/*
+    #   - hotfix/*
   pull_request:
-    types: 
-      - opened
-      - synchronize
-      - reopened
+    # types:
+    #   - opened
+    #   - synchronize
+    #   - reopened
   workflow_dispatch:
+
 jobs:
   Test:
     # test on all branches
     runs-on: ubuntu-latest
     steps:
       - run: echo "Running tests"
+      - run: |
+          echo "github.action: ${{ github.action }}"
+          echo "github.base_ref: ${{ github.base_ref }}"
+          echo "github.event_name: ${{ github.event_name }}"
+          echo "github.ref: ${{ github.ref }}"
+          echo "github.head_ref: ${{ github.head_ref }}"
+          echo "github.event.type: ${{ github.event.type }}"
+          echo "github.event.playload: ${{ toJson(github.event.payload) }}"
 
   Build:
     needs: Test
