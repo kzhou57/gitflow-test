@@ -30,7 +30,6 @@ jobs:
           echo "github.head_ref_name: ${{ github.head_ref_name }}"
           echo "github.event_name: ${{ github.event_name }}"
           echo "github.event.action: ${{ github.event.action }}"
-          echo "github.event: ${{ toJson(github.event) }}"
 
   Build:
     needs: Test
