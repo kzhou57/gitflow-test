@@ -32,7 +32,7 @@ jobs:
         with:
           develop_branch: "develop"
           main_branch: "main"
-          merge_back_from_main: true
+          merge_back_from_main: false
           version: ${{ inputs.version }}
           release_summary: ${{ inputs.release_summary }}
           dry_run: false
